@@ -2,10 +2,7 @@ package co.com.sofka.cargame.infra.config;
 
 import co.com.sofka.business.generic.ServiceBuilder;
 import co.com.sofka.business.generic.UseCase;
-import co.com.sofka.cargame.infra.services.CarrilCarroQueryService;
-import co.com.sofka.cargame.infra.services.CarroQueryService;
-import co.com.sofka.cargame.infra.services.JuegoQueryService;
-import co.com.sofka.cargame.infra.services.MoverCarroCommandService;
+import co.com.sofka.cargame.infra.services.*;
 import co.com.sofka.cargame.usecase.listeners.*;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.bus.EventBus;
@@ -42,13 +39,15 @@ public class JuegoConfig {
             CarrilCarroQueryService carrilCarroService,
             CarroQueryService carroQueryService,
             JuegoQueryService juegoQueryService,
-            MoverCarroCommandService moverCarroCommandService
+            MoverCarroCommandService moverCarroCommandService,
+            JugadorScoreQueryService jugadorScoreQueryService
     ) {
         ServiceBuilder serviceBuilder = new ServiceBuilder();
         serviceBuilder.addService(carrilCarroService);
         serviceBuilder.addService(carroQueryService);
         serviceBuilder.addService(juegoQueryService);
         serviceBuilder.addService(moverCarroCommandService);
+        serviceBuilder.addService(jugadorScoreQueryService);
         return serviceBuilder;
     }
 
