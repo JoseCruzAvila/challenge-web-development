@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins="*")
+@CrossOrigin(origins={"localhost:4200"})
 public class JuegoController {
     @Autowired
     private SubscriberEvent subscriberEvent;
