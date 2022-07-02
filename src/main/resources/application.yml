@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
   origin: ${ORIGIN:*}
 spring:
   application:
     name: cargame
   data:
     mongodb:
-      uri: ${MONGO_URI:mongodb://localhost:27017/cargame}
+      uri: ${MONGO_URI:mongodb+srv://admin:admin@cluster0.t3efa.mongodb.net/cargame}
   rabbitmq:
-    addresses: ${BUS_URI:amqp://guest:guest@localhost:5672}
+    addresses: ${BUS_URI:amqps://pqxxjknn:zEEPVeFUEj1rSLd6l_VVB4ADu0R26wu6@jackal.rmq.cloudamqp.com/pqxxjknn}
