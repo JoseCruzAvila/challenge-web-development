@@ -47,7 +47,7 @@ public class CarroQueryService implements CarroService {
                                 ArrayOperators.ArrayElemAt
                                         .arrayOf("carro")
                                         .elementAt(0)));
-        var sort = Aggregation.sort(Sort.Direction.DESC, "when");
+        var sort = Aggregation.sort(Sort.Direction.DESC, "_id");
         var project = Aggregation.project("nombre", "cedula", "carroId", "juegoId", "color");
         var limit = Aggregation.limit(conductores.size());
 
