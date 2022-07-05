@@ -34,11 +34,10 @@
           if (!connected) {
               var aggregateId = document.getElementById("aggregateId").value;
               console.log("Val: " + aggregateId);
-              socket = new WebSocket("ws://" + location.host + "/retrieve/" + aggregateId);
+              socket = new WebSocket("wss://" + location.host + "/retrieve/" + aggregateId);
 
               socket.onmessage = function(m) {
                   console.log("Got message: " + m.data);
-                  document.getElementById("result").append(m.data + "\n");
               };
           }
       };
