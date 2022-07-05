@@ -1,6 +1,7 @@
 package co.com.sofka.cargame;
 
 import co.com.sofka.business.generic.UseCaseHandler;
+import co.com.sofka.business.generic.UseCaseResponse;
 import co.com.sofka.business.repository.DomainEventRepository;
 import co.com.sofka.business.support.RequestCommand;
 import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
@@ -37,23 +38,24 @@ public class JuegoController {
     private JugadorScoreQueryService jugadoresScoreQueryService;
 
     @PostMapping("/crearJuego")
-    public List<Carro> crearJuego(@RequestBody CrearJuegoCommand command) {
+    public String crearJuego(@RequestBody CrearJuegoCommand command) {
         crearJuegoUseCase.addRepository(domainEventRepository());
         UseCaseHandler.getInstance()
                 .asyncExecutor(crearJuegoUseCase, new RequestCommand<>(command))
                 .subscribe(subscriberEvent);
 
-        return carroQueryService.getCarrosPorConductores(command.getJugadores());
+        return command.getJuegoId();
     }
 
     @PostMapping("/iniciarJuego")
-    public String iniciarJuego(@RequestBody InicarJuegoCommand command) {
+    public List<Carro> iniciarJuego(@RequestBody InicarJuegoCommand command) {
         inicarJuegoUseCase.addRepository(domainEventRepository());
         UseCaseHandler.getInstance()
                 .setIdentifyExecutor(command.getJuegoId())
                 .asyncExecutor(inicarJuegoUseCase, new RequestCommand<>(command))
                 .subscribe(subscriberEvent);
-        return command.getJuegoId();
+
+        return carroQueryService.getCarrosPorId(command.getJuegoId());
     }
 
     @GetMapping("/historialGanadores")

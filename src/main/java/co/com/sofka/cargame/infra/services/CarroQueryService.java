@@ -6,8 +6,10 @@ import co.com.sofka.cargame.usecase.model.Carro;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.MongoExpression;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +37,7 @@ public class CarroQueryService implements CarroService {
     }
 
     @Override
-    public List<Carro> getCarrosPorConductores(Map<String, String> conductores) {
+    public List<Carro> getCarrosPorId(String juegoId) {
         var lookup = LookupOperation.newLookup()
                 .from("carro.CarroCreado")
                 .localField("aggregateRootId")
@@ -47,16 +49,14 @@ public class CarroQueryService implements CarroService {
                                 ArrayOperators.ArrayElemAt
                                         .arrayOf("carro")
                                         .elementAt(0)));
-        var sort = Aggregation.sort(Sort.Direction.DESC, "_id");
         var project = Aggregation.project("nombre", "cedula", "carroId", "juegoId", "color");
-        var limit = Aggregation.limit(conductores.size());
+        var match = Aggregation.match(Criteria.where("juegoId.uuid").is(juegoId));
 
         var aggregation = Aggregation.newAggregation(
                 lookup,
                 replaceRoot,
-                sort,
                 project,
-                limit
+                match
         );
 
         return mongoTemplate.aggregate(aggregation, "carro.ConductorAsignado", String.class)
