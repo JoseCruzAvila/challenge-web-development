@@ -5,22 +5,22 @@ import co.com.sofka.business.repository.DomainEventRepository;
 import co.com.sofka.business.support.RequestCommand;
 import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
 import co.com.sofka.cargame.domain.juego.command.InicarJuegoCommand;
+import co.com.sofka.cargame.infra.services.CarroQueryService;
 import co.com.sofka.cargame.infra.services.JugadorScoreQueryService;
 import co.com.sofka.cargame.usecase.CrearJuegoUseCase;
 import co.com.sofka.cargame.usecase.InicarJuegoUseCase;
+import co.com.sofka.cargame.usecase.model.Carro;
 import co.com.sofka.cargame.usecase.model.JugadorScore;
 import co.com.sofka.domain.generic.DomainEvent;
 import co.com.sofka.infraestructure.asyn.SubscriberEvent;
 import co.com.sofka.infraestructure.repository.EventStoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins={"localhost:4200"})
 public class JuegoController {
     @Autowired
     private SubscriberEvent subscriberEvent;
@@ -32,15 +32,18 @@ public class JuegoController {
     private InicarJuegoUseCase inicarJuegoUseCase;
 
     @Autowired
+    private CarroQueryService carroQueryService;
+    @Autowired
     private JugadorScoreQueryService jugadoresScoreQueryService;
 
     @PostMapping("/crearJuego")
-    public String crearJuego(@RequestBody CrearJuegoCommand command) {
+    public List<Carro> crearJuego(@RequestBody CrearJuegoCommand command) {
         crearJuegoUseCase.addRepository(domainEventRepository());
         UseCaseHandler.getInstance()
                 .asyncExecutor(crearJuegoUseCase, new RequestCommand<>(command))
                 .subscribe(subscriberEvent);
-        return command.getJuegoId();
+
+        return carroQueryService.getCarrosPorConductores(command.getJugadores());
     }
 
     @PostMapping("/iniciarJuego")
