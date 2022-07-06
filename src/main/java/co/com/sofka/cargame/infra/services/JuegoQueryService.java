@@ -28,6 +28,14 @@ public class JuegoQueryService implements JuegoService {
                 .getPista().value().kilometros();
     }
 
+    @Override
+    public Boolean validJuego(String juegoId) {
+        var query = new Query(where("aggregateRootId").is(juegoId));
+        var obj = mongoTemplate.findOne(query, JuegoRecord.class, "juego.JuegoCreado");
+
+        return obj == null;
+    }
+
     public static class JuegoRecord {
         private Pista pista;
 

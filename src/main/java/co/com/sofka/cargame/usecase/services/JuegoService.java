@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface JuegoService {
     Integer getKilometros(JuegoId juegoId);
+
+    Boolean validJuego(String juegoId);
 }

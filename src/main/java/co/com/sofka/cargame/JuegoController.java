@@ -7,6 +7,7 @@ import co.com.sofka.business.support.RequestCommand;
 import co.com.sofka.cargame.domain.juego.command.CrearJuegoCommand;
 import co.com.sofka.cargame.domain.juego.command.InicarJuegoCommand;
 import co.com.sofka.cargame.infra.services.CarroQueryService;
+import co.com.sofka.cargame.infra.services.JuegoQueryService;
 import co.com.sofka.cargame.infra.services.JugadorScoreQueryService;
 import co.com.sofka.cargame.usecase.CrearJuegoUseCase;
 import co.com.sofka.cargame.usecase.InicarJuegoUseCase;
@@ -34,17 +35,23 @@ public class JuegoController {
 
     @Autowired
     private CarroQueryService carroQueryService;
+
+    @Autowired
+    private JuegoQueryService juegoQueryService;
     @Autowired
     private JugadorScoreQueryService jugadoresScoreQueryService;
 
     @PostMapping("/crearJuego")
     public String crearJuego(@RequestBody CrearJuegoCommand command) {
-        crearJuegoUseCase.addRepository(domainEventRepository());
-        UseCaseHandler.getInstance()
-                .asyncExecutor(crearJuegoUseCase, new RequestCommand<>(command))
-                .subscribe(subscriberEvent);
+        if (juegoQueryService.validJuego(command.getJuegoId())){
+            crearJuegoUseCase.addRepository(domainEventRepository());
+            UseCaseHandler.getInstance()
+                    .asyncExecutor(crearJuegoUseCase, new RequestCommand<>(command))
+                    .subscribe(subscriberEvent);
 
-        return command.getJuegoId();
+            return command.getJuegoId();
+        }
+        return "ID del juego ya existe";
     }
 
     @PostMapping("/iniciarJuego")
